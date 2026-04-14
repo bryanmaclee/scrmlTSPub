@@ -1,5 +1,10 @@
 # scrmlTS
 
+> **Note:** This is the public preview repository for scrml — spec, samples, stdlib,
+> editor integrations, and benchmarks. **The compiler source lives in a separate
+> private repository** and is not included here. Beta testers receive access under
+> separate invitation.
+
 The working compiler for **scrml** — a single-file, full-stack reactive web language.
 This is the TypeScript/JavaScript implementation that compiles `.scrml` source into
 HTML, CSS, client JS, and server route handlers in a single pass.
