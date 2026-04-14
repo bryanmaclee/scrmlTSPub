@@ -1,0 +1,110 @@
+// Example 14: Mario State Machine — enums, machine-governed state, pattern matching,
+// derived reactives (~tilde), reactive if= conditionals, and Tailwind utility classes.
+// Minimal #{} for theme accents; layout and spacing via built-in Tailwind engine.
+
+#{
+    body { background: #1a1a2e; font-family: 'Press Start 2P', 'Courier New', monospace; }
+}
+
+${
+    type PowerUp:enum = { Mushroom, Flower, Feather }
+
+    type MarioState:enum = { Small, Big, Fire, Cape }
+
+    @marioState: MarioMachine = MarioState.Small
+    @coins = 0
+    @lives = 3
+    @gameOver = false
+    @vulnerable = false
+
+    ~marioEmoji = match @marioState { .Small => "🧍" .Big => "🦸" .Fire => "🔥" .Cape => "🦅" }
+    ~marioName  = match @marioState { .Small => "SMALL MARIO" .Big => "SUPER MARIO" .Fire => "FIRE MARIO" .Cape => "CAPE MARIO" }
+
+    function eatPowerUp(powerUp) {
+        if (@gameOver) { return }
+        @coins = @coins + 1
+        @vulnerable = false
+        @marioState = match powerUp {
+            .Mushroom => match @marioState {
+                .Small => MarioState.Big
+                else   => @marioState
+            }
+            .Flower  => MarioState.Fire
+            .Feather => MarioState.Cape
+        }
+    }
+
+    function getHurt() {
+        if (@gameOver) { return }
+        let wasSmall = @marioState == MarioState.Small
+        @marioState = MarioState.Small
+        @vulnerable = true
+        if (wasSmall) {
+            @lives = @lives - 1
+            if (@lives == 0) {
+                @gameOver = true
+                @vulnerable = false
+            }
+        }
+    }
+
+    function restart() {
+        @marioState = MarioState.Small
+        @coins = 0
+        @lives = 3
+        @gameOver = false
+        @vulnerable = false
+    }
+}
+
+< machine MarioMachine for MarioState>
+    .Small => .Big
+    .Small => .Fire
+    .Small => .Cape
+    .Big   => .Fire
+    .Big   => .Cape
+    .Big   => .Small
+    .Fire  => .Small
+    .Cape  => .Small
+</>
+
+<div class="flex justify-center items-center min-h-screen text-white">
+    <div class="bg-gray-800 rounded-2xl p-8 w-96 border border-gray-700 shadow-2xl">
+        <h1 class="text-center text-lg text-yellow-400 mb-6">SUPER MARIO STATE MACHINE</>
+
+        <div class="flex justify-between bg-black rounded-lg p-3 mb-5 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="text-gray-400 uppercase text-xs">LIVES</>
+                <span>${@lives}</>
+            </>
+            <div class="flex items-center gap-2">
+                <span class="text-gray-400 uppercase text-xs">COINS</>
+                <span>${@coins}</>
+            </>
+            <div class="flex items-center gap-2">
+                <span class="text-gray-400 uppercase text-xs">STATE</>
+                <span>${@marioState}</>
+            </>
+        </>
+
+        <div class="flex flex-col items-center justify-center py-8">
+            <span class="text-6xl">${@marioEmoji}</>
+            <span class="text-sm mt-3 text-yellow-400">${@marioName}</>
+        </>
+
+        <div class="bg-red-900 border border-red-700 text-red-400 px-4 py-2 rounded-lg text-center text-xs mb-4" if=(@vulnerable && @gameOver == false)>ONE HIT AND YOU LOSE A LIFE!</>
+
+        <p class="text-xl text-red-500 my-6 text-center font-bold" if=(@gameOver)>GAME OVER</>
+
+        <div if=(@gameOver == false)>
+            <div class="grid grid-cols-3 gap-2 mb-3">
+                <button class="py-3 px-2 bg-green-600 text-white text-xs rounded-lg cursor-pointer border-0" onclick=${eatPowerUp(PowerUp.Mushroom)}>MUSHROOM</>
+                <button class="py-3 px-2 bg-yellow-500 text-gray-800 text-xs rounded-lg cursor-pointer border-0" onclick=${eatPowerUp(PowerUp.Flower)}>FLOWER</>
+                <button class="py-3 px-2 bg-blue-500 text-white text-xs rounded-lg cursor-pointer border-0" onclick=${eatPowerUp(PowerUp.Feather)}>FEATHER</>
+            </>
+            <button class="w-full mt-2 py-3 bg-red-600 text-white text-sm rounded-lg cursor-pointer border-0" onclick=${getHurt()}>GET HURT</>
+        </>
+
+        <button class="w-full mt-3 py-3 bg-green-600 text-white text-sm rounded-lg cursor-pointer border-0" if=(@gameOver) onclick=${restart()}>CONTINUE</>
+    </>
+</>

@@ -1,0 +1,49 @@
+// Example 04: Live Search — reactive filtering with Tailwind utilities.
+// Demonstrates @query bound to input, derived filtering via for/lift,
+// class:highlighted= dynamic class toggle. No #{} CSS — all Tailwind.
+
+<program>
+
+${
+  @query = ""
+
+  // Static data — in production this could come from a ?{} query.
+  const people = [
+    { id: 1, name: "Ada Lovelace",    role: "Mathematician" },
+    { id: 2, name: "Grace Hopper",    role: "Computer Scientist" },
+    { id: 3, name: "Alan Turing",     role: "Logician" },
+    { id: 4, name: "Linus Torvalds",  role: "Engineer" },
+    { id: 5, name: "Barbara Liskov",  role: "Computer Scientist" },
+    { id: 6, name: "Donald Knuth",    role: "Author" },
+  ]
+}
+
+<div class="max-w-lg mx-auto mt-8 px-4">
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">People</>
+
+  <input
+    type="search"
+    bind:value=@query
+    placeholder="Filter by name or role…"
+    class="w-full p-3 text-base border border-gray-300 rounded-lg mb-4"
+  >
+
+  <ul class="p-0">
+    ${
+      const q = @query.toLowerCase()
+      for (let p of people) {
+        const matches = p.name.toLowerCase().includes(q) ||
+                        p.role.toLowerCase().includes(q)
+        if (!matches) continue
+
+        lift <li class="flex justify-between py-3 px-2 border-b border-gray-200">
+          <span class="font-semibold">${p.name}</span>
+          <span class="text-gray-500 text-sm">${p.role}</span>
+        </li>
+      }
+    }
+  </ul>
+
+</div>
+
+</program>
