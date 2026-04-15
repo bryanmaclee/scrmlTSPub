@@ -34,7 +34,6 @@ bun test compiler/tests/
 
 ## What's in here
 
-- `compiler/` — compiler source, the authoritative `SPEC.md` / `SPEC-INDEX.md` / `PIPELINE.md`, 5,500+ tests, and reference self-host modules
 - `examples/` — 14 runnable single-file scrml apps
 - `samples/compilation-tests/` — 275 compilation tests covering every accepted construct
 - `stdlib/` — 13 stdlib modules
