@@ -379,6 +379,10 @@ The [`examples/`](examples/) directory contains curated examples that show what 
 - [Spec Quick-Lookup](compiler/SPEC-INDEX.md) — find any section fast
 - [Pipeline Contracts](compiler/PIPELINE.md) — stage-by-stage compiler pipeline
 
+## Related projects
+
+- **6nz** — a purpose-built code editor for the scrml ecosystem. An "Interactive Development Experience" written entirely in scrml, with a focus-centered viewport, NeoVim-superset keybindings plus mouse, CodeMirror 6 + canvas overlay, and offline-first PWA delivery. Currently in design phase, awaiting compiler API exposure in scrmlTS. The companion Z-motion input spec is released under CC0 so NeoVim and others can adopt it.
+
 ## Status
 
 scrml is in closed beta under a proprietary license. We are sharing it with a small group of developers to refine the language before a broader release.
